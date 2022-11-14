@@ -17,6 +17,7 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-web")
 
@@ -26,6 +27,8 @@ dependencies {
 
     //migration
     implementation("org.flywaydb:flyway-core")
+    runtimeOnly("org.postgresql:postgresql")
+
 }
 
 tasks.withType<KotlinCompile> {

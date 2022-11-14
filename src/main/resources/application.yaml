@@ -2,6 +2,8 @@ spring:
   datasource:
     username: postgres
     password: P@ssw0rd
+  main:
+    allow-bean-definition-overriding: true
 
 management:
   endpoints:
@@ -24,11 +26,10 @@ management:
 
 nailit:
   datasource:
-    datasource:
-      username: ${spring.datasource.username}
-      password: ${spring.datasource.password}
-      jdbcUrl: jdbc:postgresql://localhost:54309/nailit
-    flyway:
-      locations: db/migration
-      baseline-on-migrate: false
-      baseline-version: 22100801
+    username: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+    jdbcUrl: jdbc:postgresql://localhost:54320/nailit
+  flyway:
+    locations: db/migration
+    baseline-on-migrate: false
+    baseline-version: 22111401
