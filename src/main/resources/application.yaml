@@ -1,0 +1,34 @@
+spring:
+  datasource:
+    username: postgres
+    password: P@ssw0rd
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: loggers,prometheus,info,metrics,health,env
+      base-path: /admin/actuator
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+  info:
+    git:
+      mode: full
+
+nailit:
+  datasource:
+    datasource:
+      username: ${spring.datasource.username}
+      password: ${spring.datasource.password}
+      jdbcUrl: jdbc:postgresql://localhost:54309/nailit
+    flyway:
+      locations: db/migration
+      baseline-on-migrate: false
+      baseline-version: 22100801
