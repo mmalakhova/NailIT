@@ -1,4 +1,4 @@
-package nsu.fit.nailit.nailit
+package nsu.fit.nailit
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
