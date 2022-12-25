@@ -10,7 +10,6 @@ data class Master(
     val name: String,
     val age: Int,
     val phoneNumber: String,
-    val email: String,
     val rate: Float,
     val qualification: String,
     val photo_url: String?,

@@ -32,4 +32,4 @@ nailit:
   flyway:
     locations: db/migration
     baseline-on-migrate: false
-    baseline-version: 22111401
+    baseline-version: 1

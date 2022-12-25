@@ -6,7 +6,10 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.autoconfigure.flyway.FlywayProperties
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.jdbc.DataSourceBuilder
-import org.springframework.context.annotation.*
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.ComponentScan
+import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Import
 import org.springframework.data.jdbc.repository.config.EnableJdbcAuditing
 import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations
@@ -40,11 +43,11 @@ class DatabaseConfig {
         FlywayProperties()
 
     @Bean
-    fun jdbcOperations(@Qualifier("dataSource") ds: DataSource): NamedParameterJdbcOperations =
+    fun databaseJdbcOperations(@Qualifier("dataSource") ds: DataSource): NamedParameterJdbcOperations =
         NamedParameterJdbcTemplate(ds)
 
     @Bean
-    fun transactionManager(@Qualifier("dataSource") ds: DataSource): TransactionManager {
+    fun databaseTransactionManager(@Qualifier("dataSource") ds: DataSource): TransactionManager {
         return DataSourceTransactionManager(ds)
     }
 
