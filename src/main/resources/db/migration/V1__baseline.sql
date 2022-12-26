@@ -65,14 +65,15 @@ create table service
 
 create table clients
 (
-    id           serial
+    id        serial
         constraint pk_clients primary key,
-    name         varchar(256)  not null,
-    age          int           not null,
-    phone_number varchar(256)  not null,
-    rate         numeric(2, 1) not null,
-    gender_id    integer       not null
-        constraint fk_clients_genders references genders on delete cascade
+    name      varchar(256),
+    age       int,
+    phone     varchar(256) not null,
+    rate      numeric(2, 1),
+    gender_id integer
+        constraint fk_clients_genders references genders on delete cascade,
+    password  varchar      not null
 );
 
 create table service_provision
@@ -88,3 +89,17 @@ create table service_provision
     master_id integer                  not null
         constraint fk_service_provision_masters references masters on delete cascade
 );
+
+create table roles
+(
+    id   serial
+        constraint pk_roles primary key,
+    name varchar
+);
+
+create table client_roles
+(
+    client_id BIGINT REFERENCES clients (id) ON UPDATE CASCADE ON DELETE CASCADE,
+    role_id   BIGINT REFERENCES roles (id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+

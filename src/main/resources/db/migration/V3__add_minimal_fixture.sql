@@ -70,8 +70,8 @@ VALUES ('Мужской маникюр', '1 hours', 1000, 1, 2),
        ('Мужская стрижка', '45 mins', 845, 2, 1);
 
 
-INSERT INTO clients(name, age, phone_number, rate, gender_id)
-VALUES ('Никита', 21, '+70000000000', 5.0, 2);
+INSERT INTO clients(name, age, phone, rate, gender_id, password)
+VALUES ('Никита', 21, '+70000000000', 5.0, 2, 'UEBzc3cwcmQ=');
 
 INSERT INTO service_provision(title, date, price, available, client_id, master_id)
 VALUES ('Услуга 1', '2022-12-28 17:30:00.702000 +00:00', 1500, true, null, 1),
@@ -79,5 +79,10 @@ VALUES ('Услуга 1', '2022-12-28 17:30:00.702000 +00:00', 1500, true, null,
        ('Услуга 3', '2022-12-30 17:30:00.702000 +00:00', 1500, true, null, 3),
        ('Услуга 4', '2022-12-31 17:30:00.702000 +00:00', 1500, true, null, 4),
        ('Услуга 5', '2022-12-28 16:00:00.702000 +00:00', 1500, true, null, 5);
+
+INSERT INTO roles(name)
+VALUES ('ROLE_CLIENT'),
+       ('ROLE_MASTER'),
+       ('ROLE_ADMIN');
 
 

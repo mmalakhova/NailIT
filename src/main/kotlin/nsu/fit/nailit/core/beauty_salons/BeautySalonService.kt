@@ -8,6 +8,7 @@ import kotlin.math.cos
 import kotlin.math.sqrt
 
 data class BeautySalonDto(
+    val id: Long,
     val name: String,
     val address: String,
     val rate: Double,
@@ -21,9 +22,8 @@ class BeautySalonService(
 
     fun getBeautySalons(name: String?, lat: Double, lon: Double): List<BeautySalonDto> {
         val beautySalons = beautySalonRepo.getBeautySalonsByName(name)
-        println(beautySalons)
         val beautySalonsDtos = beautySalons.map {
-            BeautySalonDto(it.name, it.address, it.rate, calculateDistance(lat, lon, it))
+            BeautySalonDto(it.id, it.name, it.address, it.rate, calculateDistance(lat, lon, it))
         }
         return beautySalonsDtos
     }

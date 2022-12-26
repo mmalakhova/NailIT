@@ -33,3 +33,7 @@ nailit:
     locations: db/migration
     baseline-on-migrate: false
     baseline-version: 1
+  app:
+    #    jwtCookieName: nailit
+    jwtSecret: nailitSecretKey
+    jwtExpirationMs: 172800000

@@ -22,4 +22,8 @@ interface ClientsRepo : CrudRepository<Client, Long> {
     """
     )
     fun getAppointmentsByClient(clientId: Long): List<ClientsAppointmentDto>?
+
+    fun existsByName(name: String): Boolean
+    fun existsByPhone(phone: String): Boolean
+    fun findByPhone(phone: String): Client?
 }
