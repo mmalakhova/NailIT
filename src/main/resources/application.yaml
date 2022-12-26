@@ -32,4 +32,8 @@ nailit:
   flyway:
     locations: db/migration
     baseline-on-migrate: false
-    baseline-version: 22111401
+    baseline-version: 1
+  app:
+    #    jwtCookieName: nailit
+    jwtSecret: nailitSecretKey
+    jwtExpirationMs: 172800000
