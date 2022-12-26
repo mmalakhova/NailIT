@@ -15,13 +15,19 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 import java.util.function.Consumer
 import java.util.stream.Collectors
 import javax.validation.Valid
 
+
 data class LoginRequest(
+    @JsonProperty("phoneNumber")
     val phoneNumber: String,
+    @JsonProperty("password")
     val password: String
 )
 
@@ -40,8 +46,16 @@ data class UserInfoResponse(
     val roles: List<String>
 )
 
+data class JwtResponse(
+    val id: Long,
+    val token: String,
+    val type: String = "Bearer",
+    val phoneNumber: String,
+    val roles: List<String>
+)
 
-@CrossOrigin(origins = ["*"], maxAge = 3600)
+
+//@CrossOrigin(origins = ["*"], maxAge = 3600)
 @RestController
 @RequestMapping("/auth")
 class AuthController(
@@ -55,24 +69,32 @@ class AuthController(
 
     @PostMapping("/signin")
     fun authenticateUser(@Valid @RequestBody loginRequest: LoginRequest): ResponseEntity<*> {
-        val authentication: Authentication = authenticationManager
-            .authenticate(UsernamePasswordAuthenticationToken(loginRequest.phoneNumber, loginRequest.password))
+        println(loginRequest)
+        println(
+            UsernamePasswordAuthenticationToken(loginRequest.phoneNumber, loginRequest.password)
+        )
+        val authentication: Authentication = authenticationManager.authenticate(
+            UsernamePasswordAuthenticationToken(loginRequest.phoneNumber, loginRequest.password)
+        )
+
+        println(authentication)
+
         SecurityContextHolder.getContext().authentication = authentication
+        val jwt = jwtUtils.generateJwtToken(authentication)
 
         val userDetails = authentication.principal as UserDetailsImpl
-
-        val roles: List<String> = userDetails.authorities.stream()
-            .map { item: GrantedAuthority -> item.authority }
+        val roles = userDetails.authorities.stream()
+            .map { obj: GrantedAuthority -> obj.authority }
             .collect(Collectors.toList())
-
-        return ResponseEntity.ok()
-            .body<Any>(
-                UserInfoResponse(
-                    userDetails.id,
-                    userDetails.username,
-                    roles
-                )
+        return ResponseEntity.ok<Any>(
+            JwtResponse(
+                token = jwt,
+                id = userDetails.id,
+                phoneNumber = userDetails.username,
+                roles = roles
             )
+        )
+
     }
 
     @PostMapping("/signup")
@@ -87,6 +109,8 @@ class AuthController(
             phone = signUpRequest.phoneNumber,
             password = encoder.encode(signUpRequest.password)
         )
+
+        println(signUpRequest)
 
         val strRoles: Set<String> = signUpRequest.role
         val roles: MutableSet<Role> = HashSet()
@@ -107,6 +131,8 @@ class AuthController(
         })
 
         roles.forEach { role -> user.addRole(role) }
+        println(roles)
+        println(user)
         clientsRepo.save(user)
         return ResponseEntity.ok<Any>("User registered successfully!")
     }

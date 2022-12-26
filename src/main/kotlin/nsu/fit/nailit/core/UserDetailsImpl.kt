@@ -55,20 +55,14 @@ class UserDetailsImpl(
         return Objects.equals(id, user.id)
     }
 
-    override fun hashCode(): Int {
-        var result = id.hashCode()
-        result = 31 * result + phone.hashCode()
-        result = 31 * result + password.hashCode()
-        result = 31 * result + authorities.hashCode()
-        return result
-    }
-
     companion object {
         private const val serialVersionUID = 1L
         fun build(user: Client): UserDetailsImpl {
             val authorities: List<GrantedAuthority> = user.roles.stream()
                 .map { role -> SimpleGrantedAuthority(ERole.values()[role.roleId.toInt()].name) }
                 .collect(Collectors.toList())
+
+            println(authorities)
             return UserDetailsImpl(
                 user.id,
                 user.phone,

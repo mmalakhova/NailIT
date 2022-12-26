@@ -1,8 +1,8 @@
 package nsu.fit.nailit.core.security.jwt
 
 import nsu.fit.nailit.core.UserDetailsServiceImpl
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
@@ -13,22 +13,12 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 
-class AuthTokenFilter(
-    private val jwtUtils: JwtUtils,
-    private val userDetailsService: UserDetailsServiceImpl
-) : OncePerRequestFilter() {
+class AuthTokenFilter : OncePerRequestFilter() {
+    @Autowired
+    private var jwtUtils: JwtUtils = JwtUtils()
 
-    private fun parseJwt(request: HttpServletRequest): String? {
-        val headerAuth = request.getHeader("Authorization")
-        return if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
-            headerAuth.substring(7)
-        } else null
-    }
-
-
-    companion object {
-        private val logger: Logger = LoggerFactory.getLogger(AuthTokenFilter::class.java)
-    }
+    @Autowired
+    private var userDetailsService: UserDetailsServiceImpl? = null
 
     override fun doFilterInternal(
         request: HttpServletRequest,
@@ -37,20 +27,31 @@ class AuthTokenFilter(
     ) {
         try {
             val jwt = parseJwt(request)
-            if (jwtUtils.validateJwtToken(jwt)) {
-                val username: String = jwtUtils.getUserNameFromJwtToken(jwt)
-                val userDetails = userDetailsService.loadUserByUsername(username)
+            if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
+                val username = jwtUtils.getUserNameFromJwtToken(jwt)
+                val userDetails = userDetailsService?.loadUserByUsername(username)
+                println(userDetails)
                 val authentication = UsernamePasswordAuthenticationToken(
-                    userDetails,
-                    null,
+                    userDetails, null,
                     userDetails!!.authorities
                 )
                 authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
                 SecurityContextHolder.getContext().authentication = authentication
             }
         } catch (e: Exception) {
-            Companion.logger.error("Cannot set user authentication: {}", e)
+            Companion.logger.error("Cannot set user authentication")
         }
         filterChain.doFilter(request, response)
+    }
+
+    private fun parseJwt(request: HttpServletRequest): String? {
+        val headerAuth = request.getHeader("Authorization")
+        return if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
+            headerAuth.substring(7)
+        } else null
+    }
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(AuthTokenFilter::class.java)
     }
 }
